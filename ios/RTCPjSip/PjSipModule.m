@@ -28,47 +28,51 @@
     return YES;
 }
 
-RCT_EXPORT_METHOD(start: (NSDictionary *) config callback: (RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(start: (NSDictionary *) config resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [PjSipEndpoint instance].bridge = self.bridge;
 
     NSDictionary *result = [[PjSipEndpoint instance] start: config];
-    callback(@[@TRUE, result]);
+    
+    resolve(result);
 }
 
-RCT_EXPORT_METHOD(updateStunServers: (int) accountId stunServerList:(NSArray *) stunServerList callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(updateStunServers: (int) accountId stunServerList:(NSArray *) stunServerList resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] updateStunServers:accountId stunServerList:stunServerList];
-    callback(@[@TRUE]);
+    
+    resolve(@TRUE);
 }
 
 #pragma mark - Account Actions
 
-RCT_EXPORT_METHOD(createAccount: (NSDictionary *) config callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(createAccount: (NSDictionary *) config resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipAccount *account = [[PjSipEndpoint instance] createAccount:config];
-    callback(@[@TRUE, [account toJsonDictionary]]);
+    
+    resolve([account toJsonDictionary]);
 }
 
-RCT_EXPORT_METHOD(deleteAccount: (int) accountId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(deleteAccount: (int) accountId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] deleteAccount:accountId];
-    callback(@[@TRUE]);
+    
+    resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     @try {
         PjSipEndpoint* endpoint = [PjSipEndpoint instance];
         PjSipAccount *account = [endpoint findAccount:accountId];
         
         [account register:renew];
-        
-        callback(@[@TRUE]);
+
+        resolve(@TRUE);
     }
     @catch (NSException * e) {
-        callback(@[@FALSE, e.reason]);
+        reject(e);
     }
 }
 
 #pragma mark - Call Actions
 
-RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destination callSettings:(NSDictionary*) callSettings msgData:(NSDictionary*) msgData callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destination callSettings:(NSDictionary*) callSettings msgData:(NSDictionary*) msgData resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     @try {
         PjSipEndpoint* endpoint = [PjSipEndpoint instance];
         PjSipAccount *account = [endpoint findAccount:accountId];
@@ -78,36 +82,38 @@ RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destinatio
         // Automatically put other calls on hold.
         [endpoint pauseParallelCalls:call];
         
-        callback(@[@TRUE, [call toJsonDictionary:endpoint.isSpeaker]]);
+        resolve([call toJsonDictionary:endpoint.isSpeaker]);
     }
     @catch (NSException * e) {
-        callback(@[@FALSE, e.reason]);
+        reject(e);
     }
 }
 
-RCT_EXPORT_METHOD(hangupCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(hangupCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call hangup];
-        callback(@[@TRUE]);
+
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(declineCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(declineCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call decline];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(answerCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(answerCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipEndpoint* endpoint = [PjSipEndpoint instance];
     PjSipCall *call = [endpoint findCall:callId];
     
@@ -117,13 +123,13 @@ RCT_EXPORT_METHOD(answerCall: (int) callId callback:(RCTResponseSenderBlock) cal
         // Automatically put other calls on hold.
         [endpoint pauseParallelCalls:call];
         
-        callback(@[@TRUE]);
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject("Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(holdCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(holdCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipEndpoint* endpoint = [PjSipEndpoint instance];
     PjSipCall *call = [endpoint findCall:callId];
     
@@ -131,13 +137,13 @@ RCT_EXPORT_METHOD(holdCall: (int) callId callback:(RCTResponseSenderBlock) callb
         [call hold];
         [endpoint emmitCallChanged:call];
         
-        callback(@[@TRUE]);
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(unholdCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(unholdCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipEndpoint* endpoint = [PjSipEndpoint instance];
     PjSipCall *call = [endpoint findCall:callId];
     
@@ -148,112 +154,129 @@ RCT_EXPORT_METHOD(unholdCall: (int) callId callback:(RCTResponseSenderBlock) cal
         // Automatically put other calls on hold.
         [endpoint pauseParallelCalls:call];
         
-        callback(@[@TRUE]);
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(muteCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(muteCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipEndpoint* endpoint = [PjSipEndpoint instance];
     PjSipCall *call = [endpoint findCall:callId];
     
     if (call) {
         [call mute];
         [endpoint emmitCallChanged:call];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(unMuteCall: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(unMuteCall: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipEndpoint* endpoint = [PjSipEndpoint instance];
     PjSipCall *call = [endpoint findCall:callId];
     
     if (call) {
         [call unmute];
         [endpoint emmitCallChanged:call];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(xferCall: (int) callId destination: (NSString *) destination callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(xferCall: (int) callId destination: (NSString *) destination resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call xfer:destination];
-        callback(@[@TRUE]);
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(xferReplacesCall: (int) callId destinationCallId: (int) destinationCallId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(xferReplacesCall: (int) callId destinationCallId: (int) destinationCallId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call xferReplaces:destinationCallId];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(redirectCall: (int) callId destination: (NSString *) destination callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(redirectCall: (int) callId destination: (NSString *) destination resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call redirect:destination];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(dtmfCall: (int) callId digits: (NSString *) digits callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(dtmfCall: (int) callId digits: (NSString *) digits resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     PjSipCall *call = [[PjSipEndpoint instance] findCall:callId];
     
     if (call) {
         [call dtmf:digits];
-        callback(@[@TRUE]);
+        
+        resolve(@TRUE);
     } else {
-        callback(@[@FALSE, @"Call not found"]);
+        reject(@"Call not found");
     }
 }
 
-RCT_EXPORT_METHOD(useSpeaker: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(useSpeaker: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] useSpeaker];
+    
+    resole(@TRUE);
 }
 
-RCT_EXPORT_METHOD(useEarpiece: (int) callId callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(useEarpiece: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] useEarpiece];
+    
+    resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(activateAudioSession: (RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(activateAudioSession: resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     pjsua_set_no_snd_dev();
     pj_status_t status;
     status = pjsua_set_snd_dev(PJMEDIA_AUD_DEFAULT_CAPTURE_DEV, PJMEDIA_AUD_DEFAULT_PLAYBACK_DEV);
+    
     if (status != PJ_SUCCESS) {
         NSLog(@"Failed to active audio session");
     }
+    
+    resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(deactivateAudioSession: (RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(deactivateAudioSession: (resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     pjsua_set_no_snd_dev();
+    
+    resolve(@TRUE);
 }
 
 #pragma mark - Settings
 
-RCT_EXPORT_METHOD(changeOrientation: (NSString*) orientation) {
+RCT_EXPORT_METHOD(changeOrientation: (NSString*) orientation resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] changeOrientation:orientation];
+    
+    resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(changeCodecSettings: (NSDictionary*) codecSettings callback:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(changeCodecSettings: (NSDictionary*) codecSettings resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] changeCodecSettings:codecSettings];
-    callback(@[@TRUE]);
+    
+    resolve(@TRUE);
 }
 
 RCT_EXPORT_MODULE();

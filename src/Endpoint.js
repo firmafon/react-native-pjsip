@@ -68,42 +68,37 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     start(configuration) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.start(configuration, (successful, data) => {
-                if (successful) {
-                    let accounts = [];
-                    let calls = [];
+      return NativeModules.PjSipModule.start(configuration)
+        .then(data => {
+          let accounts = [];
+          let calls = [];
 
-                    if (data.hasOwnProperty('accounts')) {
-                        for (let d of data['accounts']) {
-                            accounts.push(new Account(d));
-                        }
-                    }
+          if (data.hasOwnProperty('accounts')) {
+            for (let d of data['accounts']) {
+              accounts.push(new Account(d));
+            }
+          }
 
-                    if (data.hasOwnProperty('calls')) {
-                        for (let d of data['calls']) {
-                            calls.push(new Call(d));
-                        }
-                    }
+          if (data.hasOwnProperty('calls')) {
+            for (let d of data['calls']) {
+              calls.push(new Call(d));
+            }
+          }
 
-                    let extra = {};
+          let extra = {};
 
-                    for (let key in data) {
-                        if (data.hasOwnProperty(key) && key != "accounts" && key != "calls") {
-                            extra[key] = data[key];
-                        }
-                    }
+          for (let key in data) {
+            if (data.hasOwnProperty(key) && key != "accounts" && key != "calls") {
+              extra[key] = data[key];
+            }
+          }
 
-                    resolve({
-                        accounts,
-                        calls,
-                        ...extra
-                    });
-                } else {
-                    reject(data);
-                }
-            });
-        });
+          return {
+            accounts,
+            calls,
+            ...extra
+          }
+        })
     }
 
     updateStunServers(accountId, stunServerList) {
@@ -123,15 +118,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     changeNetworkConfiguration(configuration) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.changeNetworkConfiguration(configuration, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.changeNetworkConfiguration(configuration)
     }
 
     /**
@@ -139,15 +126,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     changeServiceConfiguration(configuration) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.changeServiceConfiguration(configuration, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.changeServiceConfiguration(configuration)
     }
 
     /**
@@ -172,19 +151,11 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     createAccount(configuration) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.createAccount(configuration, (successful, data) => {
-                if (successful) {
-                    resolve(new Account(data));
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.createAccount(configuration)
     }
 
     replaceAccount(account, configuration) {
-        throw new Error("Not implemented");
+      throw new Error("Not implemented");
     }
 
     /**
@@ -197,15 +168,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     registerAccount(account, renew = true) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.registerAccount(account.getId(), renew, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.registerAccount(account.getId())
     }
 
     /**
@@ -215,15 +178,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     deleteAccount(account) {
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.deleteAccount(account.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.deleteAccount(account.getId())
     }
 
     /**
@@ -239,17 +194,9 @@ export default class Endpoint extends EventEmitter {
      * @param msgSettings {PjSipMsgData} Outgoing call additional information to be sent with outgoing SIP message.
      */
     makeCall(account, destination, callSettings, msgData) {
-        destination = this._normalize(account, destination);
+      destination = this._normalize(account, destination);
 
-        return new Promise(function(resolve, reject) {
-            NativeModules.PjSipModule.makeCall(account.getId(), destination, callSettings, msgData, (successful, data) => {
-                if (successful) {
-                    resolve(new Call(data));
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.makeCall(account.getId(), destination, callSettings, msgData)
     }
 
     /**
@@ -259,15 +206,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     answerCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.answerCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.answerCall(call.getId())
     }
 
     /**
@@ -277,16 +216,8 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     hangupCall(call) {
-        // TODO: Add possibility to pass code and reason for hangup.
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.hangupCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      // TODO: Add possibility to pass code and reason for hangup.
+      return NativeModules.PjSipModule.hangupCall(call.getId())
     }
 
     /**
@@ -296,15 +227,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     declineCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.declineCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.declineCall(call.getId())
     }
 
     /**
@@ -314,15 +237,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     holdCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.holdCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.holdCall(call.getId())
     }
 
     /**
@@ -332,15 +247,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     unholdCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.unholdCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.unholdCall(call.getId())
     }
 
     /**
@@ -348,15 +255,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     muteCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.muteCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.muteCall(call.getId())
     }
 
     /**
@@ -364,15 +263,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     unMuteCall(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.unMuteCall(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.unMuteCall(call.getId())
     }
 
     /**
@@ -380,15 +271,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     useSpeaker(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.useSpeaker(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.useSpeaker(call.getId())
     }
 
     /**
@@ -396,15 +279,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     useEarpiece(call) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.useEarpiece(call.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.useEarpiece(call.getId())
     }
 
     /**
@@ -417,17 +292,9 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     xferCall(account, call, destination) {
-        destination = this._normalize(account, destination);
+      destination = this._normalize(account, destination);
 
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.xferCall(call.getId(), destination, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.xferCall(call.getId(), destination)
     }
 
     /**
@@ -440,15 +307,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     xferReplacesCall(call, destCall) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.xferReplacesCall(call.getId(), destCall.getId(), (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.xferReplacesCall(call.getId(), destCall.getId())
     }
 
     /**
@@ -461,17 +320,9 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     redirectCall(account, call, destination) {
-        destination = this._normalize(account, destination);
+      destination = this._normalize(account, destination);
 
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.redirectCall(call.getId(), destination, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.redirectCall(call.getId(), destination)
     }
 
     /**
@@ -482,39 +333,15 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     dtmfCall(call, digits) {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.dtmfCall(call.getId(), digits, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.dtmfCall(call.getId(), digits)
     }
 
     activateAudioSession() {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.activateAudioSession((successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.activateAudioSession()
     }
 
     deactivateAudioSession() {
-        return new Promise((resolve, reject) => {
-            NativeModules.PjSipModule.deactivateAudioSession((successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.deactivateAudioSession()
     }
 
     changeOrientation(orientation) {
@@ -530,19 +357,11 @@ export default class Endpoint extends EventEmitter {
         throw new Error(`Invalid ${JSON.stringify(orientation)} device orientation, but expected ${orientations.join(", ")} values`)
       }
 
-      NativeModules.PjSipModule.changeOrientation(orientation)
+      return NativeModules.PjSipModule.changeOrientation(orientation)
     }
 
     changeCodecSettings(codecSettings) {
-        return new Promise(function(resolve, reject) {
-        NativeModules.PjSipModule.changeCodecSettings(codecSettings, (successful, data) => {
-                if (successful) {
-                    resolve(data);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+      return NativeModules.PjSipModule.changeCodecSettings(codecSettings)
     }
 
     /**
