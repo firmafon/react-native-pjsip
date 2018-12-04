@@ -30,7 +30,7 @@
 
 RCT_EXPORT_METHOD(start: (NSDictionary *) config resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [PjSipEndpoint instance].bridge = self.bridge;
-
+    
     NSDictionary *result = [[PjSipEndpoint instance] start: config];
     
     resolve(result);
@@ -62,11 +62,11 @@ RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew resolver:(
         PjSipAccount *account = [endpoint findAccount:accountId];
         
         [account register:renew];
-
+        
         resolve(@TRUE);
     }
     @catch (NSException * e) {
-        reject(e);
+        reject(@"register_account_fail", @"failed to register account", [NSError alloc]);
     }
 }
 
@@ -85,7 +85,7 @@ RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destinatio
         resolve([call toJsonDictionary:endpoint.isSpeaker]);
     }
     @catch (NSException * e) {
-        reject(e);
+        reject(@"make_call", @"Failed to make call", [NSError alloc]);
     }
 }
 
@@ -94,10 +94,10 @@ RCT_EXPORT_METHOD(hangupCall: (int) callId resolver:(RCTPromiseResolveBlock) res
     
     if (call) {
         [call hangup];
-
+        
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -109,7 +109,7 @@ RCT_EXPORT_METHOD(declineCall: (int) callId resolver:(RCTPromiseResolveBlock) re
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -125,7 +125,7 @@ RCT_EXPORT_METHOD(answerCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject("Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -139,7 +139,7 @@ RCT_EXPORT_METHOD(holdCall: (int) callId resolver:(RCTPromiseResolveBlock) resol
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -156,7 +156,7 @@ RCT_EXPORT_METHOD(unholdCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -170,7 +170,7 @@ RCT_EXPORT_METHOD(muteCall: (int) callId resolver:(RCTPromiseResolveBlock) resol
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -184,7 +184,7 @@ RCT_EXPORT_METHOD(unMuteCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -195,7 +195,7 @@ RCT_EXPORT_METHOD(xferCall: (int) callId destination: (NSString *) destination r
         [call xfer:destination];
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -207,7 +207,7 @@ RCT_EXPORT_METHOD(xferReplacesCall: (int) callId destinationCallId: (int) destin
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -219,7 +219,7 @@ RCT_EXPORT_METHOD(redirectCall: (int) callId destination: (NSString *) destinati
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
@@ -231,14 +231,14 @@ RCT_EXPORT_METHOD(dtmfCall: (int) callId digits: (NSString *) digits resolver:(R
         
         resolve(@TRUE);
     } else {
-        reject(@"Call not found");
+        reject(@"no_call", @"Call not found", [NSError alloc]);
     }
 }
 
 RCT_EXPORT_METHOD(useSpeaker: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] useSpeaker];
     
-    resole(@TRUE);
+    resolve(@TRUE);
 }
 
 RCT_EXPORT_METHOD(useEarpiece: (int) callId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
@@ -259,7 +259,7 @@ RCT_EXPORT_METHOD(activateAudioSession: resolver:(RCTPromiseResolveBlock) resolv
     resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(deactivateAudioSession: (resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(deactivateAudioSession: resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     pjsua_set_no_snd_dev();
     
     resolve(@TRUE);

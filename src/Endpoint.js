@@ -168,7 +168,7 @@ export default class Endpoint extends EventEmitter {
      * @returns {Promise}
      */
     registerAccount(account, renew = true) {
-      return NativeModules.PjSipModule.registerAccount(account.getId())
+      return NativeModules.PjSipModule.registerAccount(account.getId(), renew)
     }
 
     /**
