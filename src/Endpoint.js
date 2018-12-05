@@ -152,6 +152,7 @@ export default class Endpoint extends EventEmitter {
      */
     createAccount(configuration) {
       return NativeModules.PjSipModule.createAccount(configuration)
+        .then(data => new Account(data))
     }
 
     replaceAccount(account, configuration) {
@@ -197,6 +198,7 @@ export default class Endpoint extends EventEmitter {
       destination = this._normalize(account, destination);
 
       return NativeModules.PjSipModule.makeCall(account.getId(), destination, callSettings, msgData)
+        .then(data => new Call(data))
     }
 
     /**
