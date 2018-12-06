@@ -247,7 +247,7 @@ RCT_EXPORT_METHOD(useEarpiece: (int) callId resolver:(RCTPromiseResolveBlock) re
     resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(activateAudioSession: resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(activateAudioSession:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     pjsua_set_no_snd_dev();
     pj_status_t status;
     status = pjsua_set_snd_dev(PJMEDIA_AUD_DEFAULT_CAPTURE_DEV, PJMEDIA_AUD_DEFAULT_PLAYBACK_DEV);
@@ -259,7 +259,7 @@ RCT_EXPORT_METHOD(activateAudioSession: resolver:(RCTPromiseResolveBlock) resolv
     resolve(@TRUE);
 }
 
-RCT_EXPORT_METHOD(deactivateAudioSession: resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(deactivateAudioSession:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     pjsua_set_no_snd_dev();
     
     resolve(@TRUE);
