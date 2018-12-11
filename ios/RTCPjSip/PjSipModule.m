@@ -66,7 +66,9 @@ RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew resolver:(
         resolve(@TRUE);
     }
     @catch (NSException * e) {
-        reject(@"register_account_fail", @"failed to register account", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"register_account_fail", @"failed to register account", error);
     }
 }
 
@@ -85,7 +87,9 @@ RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destinatio
         resolve([call toJsonDictionary:endpoint.isSpeaker]);
     }
     @catch (NSException * e) {
-        reject(@"make_call", @"Failed to make call", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"make_call", @"Failed to make call", error);
     }
 }
 
@@ -97,7 +101,9 @@ RCT_EXPORT_METHOD(hangupCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -109,7 +115,9 @@ RCT_EXPORT_METHOD(declineCall: (int) callId resolver:(RCTPromiseResolveBlock) re
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -125,7 +133,9 @@ RCT_EXPORT_METHOD(answerCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -139,7 +149,9 @@ RCT_EXPORT_METHOD(holdCall: (int) callId resolver:(RCTPromiseResolveBlock) resol
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -156,7 +168,9 @@ RCT_EXPORT_METHOD(unholdCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -170,7 +184,9 @@ RCT_EXPORT_METHOD(muteCall: (int) callId resolver:(RCTPromiseResolveBlock) resol
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -184,7 +200,9 @@ RCT_EXPORT_METHOD(unMuteCall: (int) callId resolver:(RCTPromiseResolveBlock) res
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -195,7 +213,9 @@ RCT_EXPORT_METHOD(xferCall: (int) callId destination: (NSString *) destination r
         [call xfer:destination];
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -207,7 +227,9 @@ RCT_EXPORT_METHOD(xferReplacesCall: (int) callId destinationCallId: (int) destin
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -219,7 +241,9 @@ RCT_EXPORT_METHOD(redirectCall: (int) callId destination: (NSString *) destinati
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
@@ -231,7 +255,9 @@ RCT_EXPORT_METHOD(dtmfCall: (int) callId digits: (NSString *) digits resolver:(R
         
         resolve(@TRUE);
     } else {
-        reject(@"no_call", @"Call not found", [NSError alloc]);
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+
+        reject(@"no_call", @"Call not found", error);
     }
 }
 
