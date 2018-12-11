@@ -66,9 +66,9 @@ RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew resolver:(
         resolve(@TRUE);
     }
     @catch (NSException * e) {
-        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:e.userInfo];
 
-        reject(@"register_account_fail", @"failed to register account", error);
+        reject(e.name, e.reason, error);
     }
 }
 
@@ -87,9 +87,9 @@ RCT_EXPORT_METHOD(makeCall: (int) accountId destination: (NSString *) destinatio
         resolve([call toJsonDictionary:endpoint.isSpeaker]);
     }
     @catch (NSException * e) {
-        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:@{}];
+        NSError *error = [NSError errorWithDomain:@"com.firmafon.Phon" code:0 userInfo:e.userInfo];
 
-        reject(@"make_call", @"Failed to make call", error);
+        reject(e.name, e.reason, error);
     }
 }
 
