@@ -133,10 +133,11 @@
 }
 
 - (void)dtmf:(NSString*) digits {
-    // TODO: Fallback for "The RFC 2833 payload format did not work".
-    
-    pj_str_t value = pj_str((char *) [digits UTF8String]);
-    pjsua_call_dial_dtmf(self.id, &value);
+    pjsua_call_send_dtmf_param param;
+    pjsua_call_send_dtmf_param_default(&param);
+    param.digits = pj_str((char *) [digits UTF8String]);
+    param.method = PJSUA_DTMF_METHOD_SIP_INFO;
+    pjsua_call_send_dtmf(self.id, &param);
 }
 
 #pragma mark - Callback methods
