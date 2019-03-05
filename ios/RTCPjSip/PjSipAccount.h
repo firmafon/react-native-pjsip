@@ -21,6 +21,7 @@
 @property NSDictionary * regHeaders;
 @property NSString * regContactParams;
 @property bool regOnAdd;
+@property NSNumber * useSrtp;
 
 + (instancetype)itemConfig:(NSDictionary *)config;
 
