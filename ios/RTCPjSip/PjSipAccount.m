@@ -31,6 +31,7 @@
         self.regHeaders = config[@"regHeaders"] == nil ? [NSNull null] : config[@"regHeaders"];
         self.regContactParams = config[@"regContactParams"] == nil ? [NSNull null] : config[@"regContactParams"];
         self.regOnAdd = config[@"regOnAdd"] == @YES || config[@"regOnAdd"] == nil ? true : false;
+        self.useSrtp = config[@"useSrtp"] == nil ? PJSUA_DEFAULT_USE_SRTP : config[@"useSrtp"];
         
         pj_status_t status;
 
@@ -115,6 +116,8 @@
                     NSLog(@"Illegal \"%@\" transport (possible values are UDP, TCP or TLS) use TCP instead", self.transport);
                 }
             }
+
+            cfg.use_srtp = self.useSrtp;
         }
         
         pjsua_acc_id account_id;
