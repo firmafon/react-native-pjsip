@@ -117,7 +117,7 @@
                 }
             }
 
-            cfg.use_srtp = self.useSrtp;
+            cfg.use_srtp = (pjmedia_srtp_use) [self.useSrtp intValue];
         }
         
         pjsua_acc_id account_id;
