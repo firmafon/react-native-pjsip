@@ -182,6 +182,10 @@ export default class Endpoint extends EventEmitter {
       return NativeModules.PjSipModule.deleteAccount(account.getId())
     }
 
+    handleIpChange() {
+      return NativeModules.PjSipModule.handleIpChange()
+    }
+
     /**
      * Make an outgoing call to the specified URI.
      * Available call settings:

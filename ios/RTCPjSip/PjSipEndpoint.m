@@ -210,6 +210,12 @@
     return self.accounts[@(accountId)];
 }
 
+- (void) handleIpChange {
+    pjsua_ip_change_param param;
+    pjsua_ip_change_param_default(&param);
+    pjsua_handle_ip_change(&param);
+}
+
 
 #pragma mark Calls
 

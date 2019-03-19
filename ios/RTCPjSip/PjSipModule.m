@@ -50,8 +50,8 @@ RCT_EXPORT_METHOD(createAccount: (NSDictionary *) config resolver:(RCTPromiseRes
     resolve([account toJsonDictionary]);
 }
 
-RCT_EXPORT_METHOD(deleteAccount: (int) accountId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
-    [[PjSipEndpoint instance] deleteAccount:accountId];
+RCT_EXPORT_METHOD(handleIpChange:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+    [[PjSipEndpoint instance] handleIpChange];
     
     resolve(@TRUE);
 }
@@ -70,6 +70,12 @@ RCT_EXPORT_METHOD(registerAccount: (int) accountId renew:(BOOL) renew resolver:(
 
         reject(e.name, e.reason, error);
     }
+}
+
+RCT_EXPORT_METHOD(deleteAccount: (int) accountId resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
+    [[PjSipEndpoint instance] deleteAccount:accountId];
+    
+    resolve(@TRUE);
 }
 
 #pragma mark - Call Actions
