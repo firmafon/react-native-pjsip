@@ -36,6 +36,12 @@ RCT_EXPORT_METHOD(start: (NSDictionary *) config resolver:(RCTPromiseResolveBloc
     resolve(result);
 }
 
+RCT_EXPORT_METHOD(reset:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
+    [[PjSipEndpoint instance] reset];
+    
+    resolve(@TRUE);
+}
+
 RCT_EXPORT_METHOD(updateStunServers: (int) accountId stunServerList:(NSArray *) stunServerList resolver:(RCTPromiseResolveBlock) resolve rejecter: (RCTPromiseRejectBlock) reject) {
     [[PjSipEndpoint instance] updateStunServers:accountId stunServerList:stunServerList];
     

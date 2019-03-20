@@ -20,6 +20,8 @@
 
 -(NSDictionary *)start: (NSDictionary *) config;
 
+-(void) reset;
+
 -(void) updateStunServers: (int) accountId stunServerList:(NSArray *)stunServerList;
 
 -(PjSipAccount *)createAccount:(NSDictionary*) config;

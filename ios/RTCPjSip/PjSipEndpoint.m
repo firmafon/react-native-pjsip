@@ -146,6 +146,12 @@
     return self;
 }
 
+- (void) reset {
+    pjsua_destroy();
+
+    [self init];
+}
+
 - (NSDictionary *)start: (NSDictionary *)config {
     NSMutableArray *accountsResult = [[NSMutableArray alloc] initWithCapacity:[@([self.accounts count]) unsignedIntegerValue]];
     NSMutableArray *callsResult = [[NSMutableArray alloc] initWithCapacity:[@([self.calls count]) unsignedIntegerValue]];
