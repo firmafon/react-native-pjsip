@@ -41,6 +41,9 @@
         pjsua_config cfg;
         pjsua_config_default(&cfg);
 
+        cfg.stun_srv[0] = pj_str("stun.l.google.com:19302");
+        cfg.stun_srv_cnt = 1;
+
         // cfg.cb.on_reg_state = [self performSelector:@selector(onRegState:) withObject: o];
         cfg.cb.on_reg_state = &onRegStateChanged;
         cfg.cb.on_incoming_call = &onCallReceived;
