@@ -131,6 +131,10 @@
     {
         pjsua_transport_config cfg;
         pjsua_transport_config_default(&cfg);
+        
+        cfg.tls_setting.verify_server = true;
+        cfg.tls_setting.ca_list_file = pj_str((char*)[[[NSBundle mainBundle] pathForResource:@"cacert" ofType:@"pem"] cStringUsingEncoding:NSUTF8StringEncoding]);
+        
         pjsua_transport_id id;
         
         status = pjsua_transport_create(PJSIP_TRANSPORT_TLS, &cfg, &id);
