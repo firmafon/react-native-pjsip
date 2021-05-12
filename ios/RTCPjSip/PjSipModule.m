@@ -293,7 +293,7 @@ RCT_EXPORT_METHOD(activateAudioSession:(RCTPromiseResolveBlock) resolve rejecter
     if (status != PJ_SUCCESS) {
         NSLog(@"Failed to active audio session");
     }
-    
+
     resolve(@TRUE);
 }
 
