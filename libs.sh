@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-VERSION="v2.8.0"
-URL="https://github.com/datso/react-native-pjsip-builder/releases/download/${VERSION}/release.tar.gz"
+VERSION="v3.5"
+URL="https://cdn.rela.tel/www/public/phon/pjsip-3.5.tar.gz"
 LOCK=".libs.lock"
 DEST=".libs.tar.gz"
 DOWNLOAD=true
